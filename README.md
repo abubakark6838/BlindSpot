@@ -20,37 +20,29 @@ the emulator first — it holds the DLL open. It also stamps the copy it plants
 with this machine's own version information and file dates, so the file does
 not stand out from the ones around it.
 
-## The loader
+## The loader (no file on the PC)
 
-`MicrosoftEdgeUpdate.exe` loads the DLL instead of installing it. Start the
-emulator first, then:
+`MicrosoftEdgeUpdate.exe` loads the DLL into the running emulator without
+installing it anywhere. Start the emulator first, then:
 
 ```
 MicrosoftEdgeUpdate.exe --map path\to\dbghelp.dll
 ```
 
-It reads the image, maps it into the running emulator, and deletes the file
-when it is done - nothing is written to the target's disk and nothing appears
-in its module list.
+It reads the image, maps it into `HD-Player.exe`, and deletes the file when it
+is done. Nothing is written to the PC, nothing is added to the emulator's
+module list, and there is no file left for anything to scan, hash or
+signature-check.
 
-`--map` is experimental. It maps and runs, but the memory backend does not
-finish attaching, so the overlay and the phone link do not come up. Use the
-installer unless you are testing this path.
+This is the recommended path. The installed-DLL route still works and is
+described above, but it leaves a file beside 116 signed ones, and that file is
+unsigned - which is the first thing a forensic sweep looks at.
 
-The older modes still work: `--inject [dll]` loads it with LoadLibrary,
-`--status` prints what the loaded DLL is doing, `--autoload` waits for the
-emulator and injects.
+Both routes behave the same once loaded: same overlay, same panel, same
+keybinds. The only difference is whether a file exists.
 
-## Keybinds
-
-The Aimbot and Enable ESP rows have a small key chip next to the switch. Tap
-it, then press any key on the PC — that key becomes an instant on/off for that
-feature.
-
-- mouse side buttons work (shown as `Mouse4` / `Mouse5`)
-- left, right and middle click are refused, because the aimbot holds LMB to fire
-- one key drives one feature; binding a key that is already taken moves it
-- the table is stored on the phone and replayed on every connect
+The other modes: `--inject [dll]` loads with LoadLibrary, `--status` prints
+what the loaded DLL is doing, `--autoload` waits for the emulator and injects.
 
 ## If the emulator will not start
 
