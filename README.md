@@ -35,10 +35,34 @@ The DLL is loaded by `HD-Player.exe` at process start, so a bad copy takes the
 whole emulator down with it. Delete `dbghelp.dll` from the BlueStacks folder and
 it starts again. Then re-run `update.exe` for a clean copy.
 
+## USB instead of Wi-Fi
+
+By default the DLL listens on this machine's LAN address, which is what the
+panel expects: type the PC's IPv4 and go. That listener is visible to anything
+that enumerates sockets, and it needs a firewall rule.
+
+To keep it off the network entirely, put a `remote.cfg` next to the DLL with:
+
+```
+bind=loopback
+```
+
+The listener then exists only on `127.0.0.1`. Reach it over the cable, once per
+session:
+
+```
+adb -s <phone-serial> reverse tcp:47821 tcp:47821
+```
+
+and point the panel at `127.0.0.1` instead of the PC's address. No firewall
+rule, no LAN peer, nothing on the wire.
+
+`port=<n>` in the same file moves the listener off 47821.
+
 ## Firewall
 
-If the phone cannot reach the PC, port 47821 is blocked. Once, in an admin
-prompt:
+Only needed on the default LAN mode. If the phone cannot reach the PC, port
+47821 is blocked. Once, in an admin prompt:
 
 ```
 netsh advfirewall firewall add rule name="Blindspot" dir=in action=allow protocol=TCP localport=47821 profile=any
