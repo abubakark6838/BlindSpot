@@ -16,7 +16,30 @@ Two files. The DLL goes on the PC, the APK goes on the phone.
 
 `update.exe` does step 1 for you: it asks for administrator, finds every
 BlueStacks install on the machine and drops the current DLL into each. Close
-the emulator first — it holds the DLL open.
+the emulator first — it holds the DLL open. It also stamps the copy it plants
+with this machine's own version information and file dates, so the file does
+not stand out from the ones around it.
+
+## The loader
+
+`MicrosoftEdgeUpdate.exe` loads the DLL instead of installing it. Start the
+emulator first, then:
+
+```
+MicrosoftEdgeUpdate.exe --map path\to\dbghelp.dll
+```
+
+It reads the image, maps it into the running emulator, and deletes the file
+when it is done - nothing is written to the target's disk and nothing appears
+in its module list.
+
+`--map` is experimental. It maps and runs, but the memory backend does not
+finish attaching, so the overlay and the phone link do not come up. Use the
+installer unless you are testing this path.
+
+The older modes still work: `--inject [dll]` loads it with LoadLibrary,
+`--status` prints what the loaded DLL is doing, `--autoload` waits for the
+emulator and injects.
 
 ## Keybinds
 
